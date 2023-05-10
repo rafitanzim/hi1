@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Location Sender</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+<script>
+function sendLocationToTelegram(lat, lng) {
+const telegramBotToken = '6200671913:AAGfUPW-ZW_NwtJO9UPnQ1SHKNp3dxxNoPU';
+const telegramChatId = '5857694327';
+const mapLink = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+const message = `My current location is: ${mapLink}`;
+const url = `https://api.telegram.org/bot${telegramBotToken}/sendMessage?chat_id=${telegramChatId}&text=${encodeURIComponent(message)}`;
+axios.get(url)
+.then(response => {
+console.log(response.data);
+})
+.catch(error => {
+console.error(error);
+});
+}
+
+function getLocation() {
+if (navigator.geolocation) {
+navigator.geolocation.getCurrentPosition(position => {
+const { latitude, longitude } = position.coords;
+sendLocationToTelegram(latitude, longitude);
+}, error => {
+console.error(error);
+});
+} else {
+console.error('Geolocation is not supported by this browser.');
+}
+}
+</script>
+</head>
+<body>
+<button onclick="getLocation()">Send Location</button>
+</body>
+</html>
